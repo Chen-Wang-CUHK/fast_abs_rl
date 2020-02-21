@@ -4,6 +4,8 @@ import json
 import os
 from os.path import join, exists
 import pickle as pkl
+import numpy as np
+import random
 
 from cytoolz import compose
 
@@ -219,6 +221,8 @@ if __name__ == '__main__':
                         help='gradient clipping')
     parser.add_argument('--batch', type=int, action='store', default=32,
                         help='the training batch size')
+    parser.add_argument('--seed', type=int, action='store', default=3435,
+                        help='disable GPU training')
     parser.add_argument(
         '--ckpt_freq', type=int, action='store', default=3000,
         help='number of update steps for checkpoint and validation'
@@ -233,5 +237,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args.bi = not args.no_bi
     args.cuda = torch.cuda.is_available() and not args.no_cuda
+
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    random.seed(args.seed)
 
     main(args)
