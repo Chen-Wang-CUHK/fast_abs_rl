@@ -167,7 +167,14 @@ def batchify_fn_extract_ptr(pad, data, cuda=True):
 
     # PAD is -1 (dummy extraction index) for using sequence loss
     target = pad_batch_tensorize(targets, pad=-1, cuda=cuda)
-    remove_last = lambda tgt: tgt[:-1]
+
+    # to compile with the one sentence summary, change
+    # remove_last = lambda tgt: tgt[:-1]
+    # to
+    def remove_last(tgt):
+        tgt[1:] = tgt[:-1]
+        return tgt
+
     tar_in = pad_batch_tensorize(
         list(map(remove_last, targets)),
         pad=-0, cuda=cuda # use 0 here for feeding first conv sentence repr.

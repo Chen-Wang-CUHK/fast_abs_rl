@@ -183,7 +183,13 @@ class LSTMPointerNet(nn.Module):
     def forward(self, attn_mem, mem_sizes, lstm_in):
         """atten_mem: Tensor of size [batch_size, max_sent_num, input_dim]"""
         attn_feat, hop_feat, lstm_states, init_i = self._prepare(attn_mem)
-        lstm_in = torch.cat([init_i, lstm_in], dim=1).transpose(0, 1)
+
+        # to compile with one sentence summary, change
+        # lstm_in = torch.cat([init_i, lstm_in], dim=1).transpose(0, 1)
+        # to
+        lstm_in[:, 0, :] = init_i.squeeze(1)
+        lstm_in = lstm_in.transpose(0, 1)
+
         query, final_states = self._lstm(lstm_in, lstm_states)
         query = query.transpose(0, 1)
         for _ in range(self._n_hop):
