@@ -13,13 +13,16 @@ INI = 1e-2
 class ConvSentEncoder(nn.Module):
     """
     Convolutional word-level sentence encoder
+    changed by wchen from
     w/ max-over-time pooling, [3, 4, 5] kernel sizes, ReLU activation
+    to
+    w/ max-over-time pooling, [3] kernel sizes, ReLU activation
     """
     def __init__(self, vocab_size, emb_dim, n_hidden, dropout):
         super().__init__()
         self._embedding = nn.Embedding(vocab_size, emb_dim, padding_idx=0)
         self._convs = nn.ModuleList([nn.Conv1d(emb_dim, n_hidden, i)
-                                     for i in range(3, 6)])
+                                     for i in range(3, 4)])
         self._dropout = dropout
         self._grad_handle = None
 
