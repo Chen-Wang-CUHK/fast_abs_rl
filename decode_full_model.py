@@ -133,7 +133,11 @@ def _make_n_gram(sequence, n=2):
 def _compute_score(hyps):
     all_cnt = reduce(op.iadd, (h.gram_cnt for h in hyps), Counter())
     repeat = sum(c-1 for g, c in all_cnt.items() if c > 1)
-    lp = sum(h.logprob for h in hyps) / sum(len(h.sequence) for h in hyps)
+    # changed by wchen to fix the zero division bug
+    if sum(len(h.sequence) for h in hyps) !=0:
+        lp = sum(h.logprob for h in hyps) / sum(len(h.sequence) for h in hyps)
+    else:
+        lp = 0.0
     return (-repeat, lp)
 
 
