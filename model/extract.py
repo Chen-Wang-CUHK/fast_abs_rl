@@ -188,10 +188,10 @@ class LSTMPointerNet(nn.Module):
         attn_feat, hop_feat, lstm_states, init_i = self._prepare(attn_mem)
 
         # to compile with one sentence summary, change
-        lstm_in = torch.cat([init_i, lstm_in], dim=1).transpose(0, 1)
+        # lstm_in = torch.cat([init_i, lstm_in], dim=1).transpose(0, 1)
         # to
-        # lstm_in[:, 0, :] = init_i.squeeze(1)
-        # lstm_in = lstm_in.transpose(0, 1)
+        lstm_in[:, 0, :] = init_i.squeeze(1)
+        lstm_in = lstm_in.transpose(0, 1)
 
         query, final_states = self._lstm(lstm_in, lstm_states)
         query = query.transpose(0, 1)
